@@ -70,7 +70,7 @@ export default function VolunteerPortal({ walks, resourcePersons, availability, 
   const labelClass = 'block text-xs font-bold text-[#0f2924] mb-1.5 uppercase tracking-wide';
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6">
+    <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6">
 
       {/* ── Hero ── */}
       <motion.div
@@ -257,7 +257,7 @@ export default function VolunteerPortal({ walks, resourcePersons, availability, 
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="space-y-3 pb-28"
+          className="space-y-3"
         >
           {walks.map(walk => {
             const isFree = responses[walk.Walk_ID];
@@ -279,10 +279,10 @@ export default function VolunteerPortal({ walks, resourcePersons, availability, 
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   {/* Info */}
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-2 flex-wrap">
+                  <div className="space-y-1.5 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className="font-bold text-[#0f2924] text-base">{walk.Walk_Name}</span>
-                      <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#d1faf5] text-[#0f7a6e] border border-[#a7e6df]">
+                      <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#d1faf5] text-[#0f7a6e] border border-[#a7e6df] shrink-0">
                         {niceDate}
                       </span>
                     </div>
@@ -355,39 +355,44 @@ export default function VolunteerPortal({ walks, resourcePersons, availability, 
             );
           })}
         </motion.div>
+
+        {/* Bottom spacer so last card clears the fixed bar */}
+        <div className="h-24" />
       </motion.div>
 
-      {/* ── Sticky submit bar ── */}
+      {/* ── Fixed submit bar ── */}
       <motion.div
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0,  opacity: 1 }}
         transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 28 }}
-        className="sticky bottom-4 glass-card rounded-2xl p-4 flex items-center justify-between gap-4 shadow-xl shadow-emerald-900/10"
+        className="fixed bottom-5 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-50 pointer-events-none"
       >
-        <div className="text-xs text-[#4a7065]">
-          <span className="text-lg font-extrabold text-[#0f2924]">{Object.keys(responses).length}</span>
-          <span className="ml-1">/ {walks.length} walks marked</span>
-        </div>
+        <div className="glass-card rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-4 shadow-2xl shadow-emerald-950/20 border border-white/70 backdrop-blur-xl pointer-events-auto">
+          <div className="text-xs text-[#4a7065]">
+            <span className="text-lg font-extrabold text-[#0f2924]">{Object.keys(responses).length}</span>
+            <span className="ml-1">/ {walks.length} walks marked</span>
+          </div>
 
-        <motion.button
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.96 }}
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-          className="btn-press flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white shadow-lg shadow-emerald-700/25 transition-all disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg, #0f7a6e 0%, #16a34a 100%)' }}
-        >
-          {isSubmitting ? (
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 0.8, ease: 'linear' }}
-              className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
-            />
-          ) : (
-            <Send className="w-4 h-4" />
-          )}
-          <span>{isSubmitting ? 'Saving...' : 'Submit Availability'}</span>
-        </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="btn-press flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white shadow-lg shadow-emerald-700/25 transition-all disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg, #0f7a6e 0%, #16a34a 100%)' }}
+          >
+            {isSubmitting ? (
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 0.8, ease: 'linear' }}
+                className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+              />
+            ) : (
+              <Send className="w-4 h-4" />
+            )}
+            <span>{isSubmitting ? 'Saving...' : 'Submit Availability'}</span>
+          </motion.button>
+        </div>
       </motion.div>
     </div>
   );

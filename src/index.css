@@ -31,7 +31,10 @@
   }
 
   body {
-    background: var(--bg-page);
+    background-color: #eef8f5;
+    background-image:
+      radial-gradient(circle, #c6e8e2 1px, transparent 1px);
+    background-size: 28px 28px;
     color: var(--text-primary);
     font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     margin: 0;

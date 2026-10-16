@@ -255,17 +255,24 @@ export default function CoordinatorDashboard({ walks, resourcePersons, availabil
             animate={{ opacity: 1, y: 0 }}
             className="mb-8"
           >
-            <h2 className="text-sm font-extrabold text-[#0f2924] flex items-center gap-2 mb-4 uppercase tracking-wide">
-              <UserPlus className="w-4 h-4 text-indigo-600" />
-              New Volunteer Applications
-              <motion.span
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-bold"
-              >
-                {pendingVolunteers.length}
-              </motion.span>
-            </h2>
+          <div className="flex items-center gap-3 mb-4">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-md shadow-indigo-500/20">
+                <UserPlus className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-xl font-extrabold text-[#0f2924] tracking-tight flex items-center gap-2">
+                  New Volunteer Applications
+                  <motion.span
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                    className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-bold"
+                  >
+                    {pendingVolunteers.length}
+                  </motion.span>
+                </h2>
+                <p className="text-xs text-[#4a7065] font-medium">Review, WhatsApp & approve new guides</p>
+              </div>
+            </div>
             <motion.div
               variants={containerVariants}
               initial="hidden"
