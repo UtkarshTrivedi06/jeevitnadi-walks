@@ -1,38 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @layer base {
   :root {
-    --river-deep: #0f3d3e;
-    --river-teal: #107b7b;
-    --river-mint: #e8f5f5;
-    --leaf-emerald: #15803d;
-    --leaf-soft: #f0fdf4;
-    --alert-amber: #d97706;
-    --alert-rose: #e11d48;
+    /* Core brand palette */
+    --river-deep:   #0a3d2e;
+    --river-teal:   #0f7a6e;
+    --river-mid:    #14a898;
+    --river-light:  #d1faf5;
+    --leaf-emerald: #16a34a;
+    --leaf-soft:    #f0fdf4;
+    --amber-alert:  #d97706;
+    --rose-alert:   #e11d48;
+
+    /* Surface tokens */
+    --bg-page:      #f4faf8;
+    --bg-card:      #ffffff;
+    --bg-subtle:    #eef8f5;
+    --border-soft:  #d1e9e5;
+    --text-primary: #0f2924;
+    --text-muted:   #4a7065;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
-    background-color: #f8fafc;
-    color: #1e293b;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* ─── Custom scrollbar ─────────────────────────── */
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: #e8f5f2; }
+::-webkit-scrollbar-thumb  { background: #a7d9d0; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #5ab9ae; }
+
+/* ─── Keyframes ─────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
 }
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  70%  { transform: scale(1.6); opacity: 0; }
+  100% { transform: scale(1.6); opacity: 0; }
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Utility classes ───────────────────────────── */
+.animate-slide-up   { animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-fade-in    { animation: fade-in  0.3s ease both; }
+.animate-float      { animation: float-slow 4s ease-in-out infinite; }
+
+/* Shimmer gradient text */
+.text-shimmer {
+  background: linear-gradient(90deg, #0f7a6e 0%, #16a34a 30%, #14a898 60%, #0f7a6e 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.55);
+  box-shadow: 0 4px 32px rgba(10,61,46,0.06), 0 1px 4px rgba(10,61,46,0.04);
+}
+
+/* Pulse ring indicator */
+.pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0;
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+/* Gradient card surface */
+.card-surface {
+  background: linear-gradient(135deg, #ffffff 0%, #f4faf8 100%);
+  border: 1px solid #d1e9e5;
+  box-shadow: 0 1px 3px rgba(10,61,46,0.06), 0 8px 24px rgba(10,61,46,0.04);
+}
+
+/* Button press physics */
+.btn-press {
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.btn-press:active {
+  transform: scale(0.97) translateY(1px);
+  box-shadow: none;
+}
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid #14a898;
+  outline-offset: 2px;
+  border-radius: 6px;
 }
