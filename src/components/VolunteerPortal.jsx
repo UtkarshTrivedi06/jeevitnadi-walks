@@ -257,11 +257,12 @@ export default function VolunteerPortal({ walks, resourcePersons, availability, 
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="space-y-3"
+          className="space-y-3 pb-28"
         >
           {walks.map(walk => {
             const isFree = responses[walk.Walk_ID];
             const selected = isFree !== undefined;
+            const niceDate = new Date(walk.Date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 
             return (
               <motion.div
@@ -282,7 +283,7 @@ export default function VolunteerPortal({ walks, resourcePersons, availability, 
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-bold text-[#0f2924] text-base">{walk.Walk_Name}</span>
                       <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#d1faf5] text-[#0f7a6e] border border-[#a7e6df]">
-                        {walk.Date}
+                        {niceDate}
                       </span>
                     </div>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#4a7065]">

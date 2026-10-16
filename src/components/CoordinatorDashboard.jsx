@@ -319,11 +319,17 @@ export default function CoordinatorDashboard({ walks, resourcePersons, availabil
 
       {/* ── Walk schedule ── */}
       <section>
-        <h2 className="text-sm font-extrabold text-[#0f2924] flex items-center gap-2 mb-5 uppercase tracking-wide">
-          <CalendarDays className="w-4 h-4 text-[#0f7a6e]" />
-          Upcoming Walks
-          <span className="text-[11px] font-semibold text-[#4a7065] normal-case ml-1">({upcomingWalks.length} scheduled)</span>
-        </h2>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#0f7a6e] to-[#16a34a] flex items-center justify-center shadow-md shadow-emerald-700/15">
+              <CalendarDays className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-extrabold text-[#0f2924] tracking-tight">Upcoming Walks</h2>
+              <p className="text-xs text-[#4a7065] font-medium">{upcomingWalks.length} walks scheduled this season</p>
+            </div>
+          </div>
+        </div>
 
         <motion.div
           variants={containerVariants}
@@ -334,6 +340,7 @@ export default function CoordinatorDashboard({ walks, resourcePersons, availabil
           {upcomingWalks.map(walk => {
             const days         = daysUntil(walk.Date);
             const isUnassigned = walk.Assigned_Leader === 'UNASSIGNED';
+            const shortDate    = new Date(walk.Date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
             const walkAvail    = availMap[walk.Walk_ID] || [];
             const seenNames    = new Set();
             const availableGuides = [];
@@ -378,7 +385,7 @@ export default function CoordinatorDashboard({ walks, resourcePersons, availabil
                           days <= 7  ? 'bg-amber-100 text-amber-700 border-amber-200' :
                           'bg-[#eef8f5] text-[#0f7a6e] border-[#d1e9e5]'
                         }`}>
-                          {days === 0 ? 'TODAY' : `${days}d away`} · {walk.Date}
+                          {days === 0 ? 'TODAY' : `${days}d`} · {shortDate}
                         </span>
                         {/* Flyer badge */}
                         <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
