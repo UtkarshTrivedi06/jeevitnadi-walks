@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  CalendarDays, AlertTriangle, Bell, User, Check, ChevronDown, MapPin, Clock,
+  CalendarDays, Calendar, AlertTriangle, Bell, User, Check, ChevronDown, MapPin, Clock,
   ExternalLink, Flag, MessageCircle, UserPlus, ShieldCheck, Trash2, Plus, X
 } from 'lucide-react';
 import { assignWalkLeader, updateFlyerStatus, approveNewVolunteer, dismissNewVolunteer, addNewWalk } from '../services/api';
@@ -148,58 +148,101 @@ export default function CoordinatorDashboard({ walks, resourcePersons, availabil
           >
             {flyerAlerts.map(w => {
               const days = daysUntil(w.Date);
+              // Format date nicely: "Fri, 30 Oct 2026"
+              const niceDate = new Date(w.Date).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
               return (
                 <motion.div
                   key={`flyer-${w.Walk_ID}`}
                   initial={{ opacity: 0, x: -12 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 rounded-2xl bg-amber-50 border border-amber-200 shadow-xs"
+                  className="rounded-2xl bg-amber-50 border border-amber-200 shadow-xs overflow-hidden"
                 >
-                  <div className="flex items-center gap-2 text-amber-800 shrink-0">
-                    <motion.div
-                      animate={{ scale: [1, 1.15, 1] }}
-                      transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
+                  {/* Coloured top strip */}
+                  <div className="h-1 bg-gradient-to-r from-amber-400 to-orange-400" />
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4">
+                    {/* Countdown block */}
+                    <div className="flex items-center gap-3 shrink-0">
+                      <motion.div
+                        animate={{ scale: [1, 1.18, 1] }}
+                        transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
+                        className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center"
+                      >
+                        <AlertTriangle className="w-5 h-5 text-amber-600" />
+                      </motion.div>
+                      <div className="text-left">
+                        <p className="text-xl font-extrabold text-amber-700 leading-none">
+                          {days === 0 ? 'TODAY' : `${days}d`}
+                        </p>
+                        <p className="text-[10px] font-bold text-amber-500 uppercase tracking-wide">
+                          {days === 0 ? 'Act now' : 'remaining'}
+                        </p>
+                      </div>
+                    </div>
+                    {/* Divider */}
+                    <div className="hidden sm:block w-px self-stretch bg-amber-200" />
+                    {/* Walk info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-extrabold text-[#0f2924] text-sm truncate">{w.Walk_Name}</p>
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                          <Calendar className="w-3 h-3" /> {niceDate}
+                        </span>
+                        <span className="text-xs text-amber-700 font-medium">Flyer is still <em className="font-bold">{w.Flyer_Status}</em> — share on Instagram & WhatsApp now!</span>
+                      </div>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }}
+                      onClick={() => handleFlyerToggle(w.Walk_ID, w.Flyer_Status)}
+                      className="btn-press shrink-0 text-xs font-bold px-4 py-2.5 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors shadow-sm shadow-amber-500/30"
                     >
-                      <AlertTriangle className="w-5 h-5 text-amber-500" />
-                    </motion.div>
-                    <span className="font-extrabold text-sm">{days === 0 ? 'TODAY' : `${days}d left`}</span>
+                      Mark Published ✓
+                    </motion.button>
                   </div>
-                  <p className="text-sm text-amber-900 font-medium flex-1">
-                    <strong>{w.Walk_Name}</strong> on <strong>{w.Date}</strong> — Flyer still <em>{w.Flyer_Status}</em>. Share on Instagram & WhatsApp now!
-                  </p>
-                  <motion.button
-                    whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }}
-                    onClick={() => handleFlyerToggle(w.Walk_ID, w.Flyer_Status)}
-                    className="btn-press shrink-0 text-xs font-bold px-3.5 py-2 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors shadow-sm shadow-amber-500/30"
-                  >
-                    Mark Published ✓
-                  </motion.button>
                 </motion.div>
               );
             })}
-            {unassignedAlerts.map(w => (
-              <motion.div
-                key={`assign-${w.Walk_ID}`}
-                initial={{ opacity: 0, x: -12 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 rounded-2xl bg-rose-50 border border-rose-200 shadow-xs"
-              >
-                <div className="flex items-center gap-2 text-rose-800 shrink-0">
-                  <Bell className="w-5 h-5 text-rose-500" />
-                  <span className="font-extrabold text-sm">{daysUntil(w.Date)}d</span>
-                </div>
-                <p className="text-sm text-rose-900 font-medium flex-1">
-                  <strong>{w.Walk_Name}</strong> on <strong>{w.Date}</strong> — No resource person assigned yet!
-                </p>
-                <motion.button
-                  whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }}
-                  onClick={() => setOpenAssignId(w.Walk_ID)}
-                  className="btn-press shrink-0 text-xs font-bold px-3.5 py-2 rounded-xl bg-rose-600 text-white hover:bg-rose-700 transition-colors shadow-sm shadow-rose-600/30"
+            {unassignedAlerts.map(w => {
+              const days = daysUntil(w.Date);
+              const niceDate = new Date(w.Date).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+              return (
+                <motion.div
+                  key={`assign-${w.Walk_ID}`}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="rounded-2xl bg-rose-50 border border-rose-200 shadow-xs overflow-hidden"
                 >
-                  Assign Leader →
-                </motion.button>
-              </motion.div>
-            ))}
+                  <div className="h-1 bg-gradient-to-r from-rose-400 to-pink-400" />
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4">
+                    <div className="flex items-center gap-3 shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-rose-100 border border-rose-200 flex items-center justify-center">
+                        <Bell className="w-5 h-5 text-rose-600" />
+                      </div>
+                      <div className="text-left">
+                        <p className="text-xl font-extrabold text-rose-600 leading-none">{days}d</p>
+                        <p className="text-[10px] font-bold text-rose-400 uppercase tracking-wide">remaining</p>
+                      </div>
+                    </div>
+                    <div className="hidden sm:block w-px self-stretch bg-rose-200" />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-extrabold text-[#0f2924] text-sm truncate">{w.Walk_Name}</p>
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
+                          <Calendar className="w-3 h-3" /> {niceDate}
+                        </span>
+                        <span className="text-xs text-rose-700 font-medium">No resource person assigned yet!</span>
+                      </div>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }}
+                      onClick={() => setOpenAssignId(w.Walk_ID)}
+                      className="btn-press shrink-0 text-xs font-bold px-4 py-2.5 rounded-xl bg-rose-600 text-white hover:bg-rose-700 transition-colors shadow-sm shadow-rose-600/30"
+                    >
+                      Assign Leader →
+                    </motion.button>
+                  </div>
+                </motion.div>
+              );
+            })}
           </motion.section>
         )}
       </AnimatePresence>
@@ -319,7 +362,8 @@ export default function CoordinatorDashboard({ walks, resourcePersons, availabil
               <motion.div
                 key={walk.Walk_ID}
                 variants={itemVariants}
-                whileHover={{ y: -2, boxShadow: '0 10px 40px rgba(10,61,46,0.09)' }}
+                whileHover={{ y: isOpen ? 0 : -2, boxShadow: isOpen ? '0 10px 40px rgba(10,61,46,0.09)' : '0 10px 40px rgba(10,61,46,0.09)' }}
+                style={{ zIndex: isOpen ? 50 : 'auto', position: 'relative' }}
                 className={`rounded-2xl border transition-all duration-200 overflow-visible ${cardBorder}`}
               >
                 <div className="p-5">
