@@ -22,14 +22,13 @@ export default function Navbar({ activeTab, setActiveTab, isLiveApi, pendingCoun
     }
   };
 
-  // If in Volunteer Portal mode: show clean, uncluttered volunteer header
+  // If in Volunteer Portal mode: clean header — no coordinator access
   if (activeTab === 'volunteer') {
     return (
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-emerald-100 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-18">
-            
-            {/* Brand Logo & Name */}
+          <div className="flex items-center h-18">
+            {/* Brand Logo & Name only — no navigation buttons */}
             <div className="flex items-center gap-3">
               <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md shadow-emerald-700/20">
                 <Compass className="w-6 h-6" />
@@ -44,14 +43,6 @@ export default function Navbar({ activeTab, setActiveTab, isLiveApi, pendingCoun
                 <p className="text-xs text-slate-500 font-medium">Walk Availability & Registration Form</p>
               </div>
             </div>
-
-            {/* Right: Switch to Coordinator (discreet) */}
-            <button
-              onClick={() => setActiveTab('coordinator')}
-              className="text-xs font-semibold text-slate-500 hover:text-emerald-700 px-3 py-1.5 rounded-lg border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 transition-colors"
-            >
-              Coordinator View →
-            </button>
           </div>
         </div>
       </header>
